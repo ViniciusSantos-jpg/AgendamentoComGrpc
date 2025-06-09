@@ -2,18 +2,18 @@
 
 Este projeto é uma implementação de um sistema de agendamento médico distribuído, desenvolvido como parte do trabalho da disciplina de Sistemas Distribuídos. O sistema utiliza um modelo cliente-servidor, onde múltiplos clientes podem interagir com um servidor central para gerenciar consultas médicas.
 
-[cite_start]A comunicação entre os componentes é realizada através do **gRPC (Google Remote Procedure Call)** [cite: 1][cite_start], que garante uma comunicação leve, rápida e segura[cite: 3]. [cite_start]O sistema é classificado como de **Objetos ou Componentes Distribuídos** [cite: 4][cite_start], e abstrai detalhes de comunicação, localização e heterogeneidade para o desenvolvedor e usuário final.
+A comunicação entre os componentes é realizada através do **gRPC (Google Remote Procedure Call)**, que garante uma comunicação leve, rápida e segura. O sistema é classificado como de **Objetos ou Componentes Distribuídos**, e abstrai detalhes de comunicação, localização e heterogeneidade para o desenvolvedor e usuário final.
 
 ## Funcionalidades
 
-- [cite_start]**Arquitetura Cliente-Servidor:** Um servidor central gerencia os dados e múltiplos clientes com interface gráfica interagem com ele.
+- **Arquitetura Cliente-Servidor:** Um servidor central gerencia os dados e múltiplos clientes com interface gráfica interagem com ele.
 - **Comunicação Real-Time:** Clientes são notificados em tempo real sobre novos agendamentos ou cancelamentos através de *gRPC Streaming*, mantendo a lista de todos os clientes sempre sincronizada.
-- [cite_start]**Interface Gráfica Moderna:** Interface desenvolvida com Python e a biblioteca `ttkbootstrap` para uma experiência de usuário agradável e intuitiva, sem a necessidade de um navegador web.
+- **Interface Gráfica Moderna:** Interface desenvolvida com Python e a biblioteca `ttkbootstrap` para uma experiência de usuário agradável e intuitiva, sem a necessidade de um navegador web.
 - **Gerenciamento de Consultas:**
-    - [cite_start]Cadastrar uma nova consulta com dados de paciente, médico, data e horário.
-    - [cite_start]Cancelar um agendamento existente através da seleção na lista.
-    - [cite_start]Listar todas as consultas salvas em uma tabela organizada.
-    - [cite_start]Verificar a disponibilidade de um horário específico.
+    - Cadastrar uma nova consulta com dados de paciente, médico, data e horário.
+    - Cancelar um agendamento existente através da seleção na lista.
+    - Listar todas as consultas salvas em uma tabela organizada.
+    - Verificar a disponibilidade de um horário específico.
 - **Validação de Dados no Cliente:**
     - **Validação de Formato:** Formatação automática e restrição de entrada para campos de data (DD/MM/AAAA) e horário (HH:MM).
     - **Validação Lógica:** O sistema impede o agendamento de datas ou horários inválidos e de datas/horários que já passaram.
@@ -21,9 +21,9 @@ Este projeto é uma implementação de um sistema de agendamento médico distrib
 ## Tecnologias Utilizadas
 
 - **Linguagem:** Python 3
-- [cite_start]**Comunicação:** gRPC (`grpcio`, `grpcio-tools`) 
-- [cite_start]**Serialização de Dados:** Protocol Buffers 
-- [cite_start]**Interface Gráfica:** Tkinter com `ttkbootstrap` 
+- **Comunicação:** gRPC (`grpcio`, `grpcio-tools`) 
+- **Serialização de Dados:** Protocol Buffers 
+- **Interface Gráfica:** Tkinter com `ttkbootstrap` 
 
 ## Pré-requisitos
 
@@ -60,7 +60,7 @@ python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. agendamento.p
 
 ### 2. Iniciar o Servidor
 
-[cite_start]O servidor precisa estar rodando para que os clientes possam se conectar a ele.
+O servidor precisa estar rodando para que os clientes possam se conectar a ele.
 
 Em um terminal, execute:
 ```bash
@@ -70,7 +70,7 @@ Você verá uma mensagem `Iniciando servidor gRPC na porta 50051...`. **Deixe es
 
 ### 3. Iniciar o(s) Cliente(s)
 
-[cite_start]Você pode iniciar quantas instâncias do cliente quiser para simular múltiplos usuários acessando o sistema simultaneamente.
+Você pode iniciar quantas instâncias do cliente quiser para simular múltiplos usuários acessando o sistema simultaneamente.
 
 Abra um **novo terminal** para cada cliente que desejar executar e, no diretório do projeto, rode o comando:
 ```bash
