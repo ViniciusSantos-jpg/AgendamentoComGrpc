@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package agendamento;
+
+// Mensagem que representa uma consulta
+message Consulta {
+  string paciente = 1;
+  string medico = 2;
+  string data = 3;
+  string horario = 4;
+}
+
+// Requisição para agendar uma nova consulta
+message AgendarConsultaRequest {
+  Consulta consulta = 1;
+}
+
+// Resposta do agendamento
+message AgendarConsultaResponse {
+  string mensagem = 1;
+  bool sucesso = 2;
+}
+
+// Requisição para listar todas as consultas ou se inscrever para atualizações
+message SubscribeRequest {}
+
+// Resposta com a lista de consultas
+message ListarConsultasResponse {
+  repeated Consulta consultas = 1;
+}
+
+// Requisição para verificar a disponibilidade de um horário
+message VerificarDisponibilidadeRequest {
+    string data = 1;
+    string horario = 2;
+}
+
+// Resposta da verificação de disponibilidade
+message VerificarDisponibilidadeResponse {
+    bool disponivel = 1;
+}
+
+// Requisição para cancelar um agendamento
+message CancelarConsultaRequest {
+  string paciente = 1;
+  string data = 2;
+  string horario = 3;
+}
+
+// Resposta do cancelamento
+message CancelarConsultaResponse {
+  string mensagem = 1;
+  bool sucesso = 2;
+}
+
+
+// Definição do serviço de agendamento
+service AgendamentoMedico {
+  rpc AgendarConsulta(AgendarConsultaRequest) returns (AgendarConsultaResponse);
+
+  // MUDANÇA: O ListarConsultas agora é usado apenas para a primeira carga.
+  rpc ListarConsultas(SubscribeRequest) returns (ListarConsultasResponse);
+
+  rpc VerificarDisponibilidade(VerificarDisponibilidadeRequest) returns (VerificarDisponibilidadeResponse);
+
+  rpc CancelarConsulta(CancelarConsultaRequest) returns (CancelarConsultaResponse);
+
+  // NOVO: RPC que envia um stream de atualizações para o cliente.
+  rpc InscreverParaAtualizacoes(SubscribeRequest) returns (stream ListarConsultasResponse);
+}
