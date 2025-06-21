@@ -1,29 +1,32 @@
 # Sistema de Agendamento Médico Distribuído com gRPC
 
-Este projeto é uma implementação de um sistema de agendamento médico distribuído, desenvolvido como parte do trabalho da disciplina de Sistemas Distribuídos. O sistema utiliza um modelo cliente-servidor, onde múltiplos clientes podem interagir com um servidor central para gerenciar consultas médicas.
+Este projeto é uma implementação de um sistema de agendamento médico distribuído, desenvolvido como parte do trabalho da disciplina de Sistemas Distribuídos. O sistema utiliza um modelo cliente-servidor, onde múltiplos clientes podem interagir com um servidor central para gerenciar consultas médicas de forma segura e em tempo real.
 
-A comunicação entre os componentes é realizada através do **gRPC (Google Remote Procedure Call)**, que garante uma comunicação leve, rápida e segura. O sistema é classificado como de **Objetos ou Componentes Distribuídos**, e abstrai detalhes de comunicação, localização e heterogeneidade para o desenvolvedor e usuário final.
+A comunicação entre os componentes é realizada através do **gRPC (Google Remote Procedure Call)**, que garante uma comunicação leve, rápida e segura. O sistema se enquadra na categoria de **Objetos ou Componentes Distribuídos** , abstraindo detalhes de comunicação, localização e heterogeneidade para o desenvolvedor e usuário final.
 
-## Funcionalidades
+## Funcionalidades Principais
 
-- **Arquitetura Cliente-Servidor:** Um servidor central gerencia os dados e múltiplos clientes com interface gráfica interagem com ele.
+- **Arquitetura Cliente-Servidor:** Um servidor central em Python gerencia os dados e a lógica de negócio, enquanto múltiplos clientes com interface gráfica interagem com ele.
+
 - **Comunicação Real-Time:** Clientes são notificados em tempo real sobre novos agendamentos ou cancelamentos através de *gRPC Streaming*, mantendo a lista de todos os clientes sempre sincronizada.
-- **Interface Gráfica Moderna:** Interface desenvolvida com Python e a biblioteca `ttkbootstrap` para uma experiência de usuário agradável e intuitiva, sem a necessidade de um navegador web.
-- **Gerenciamento de Consultas:**
-    - Cadastrar uma nova consulta com dados de paciente, médico, data e horário.
-    - Cancelar um agendamento existente através da seleção na lista.
-    - Listar todas as consultas salvas em uma tabela organizada.
-    - Verificar a disponibilidade de um horário específico.
-- **Validação de Dados no Cliente:**
-    - **Validação de Formato:** Formatação automática e restrição de entrada para campos de data (DD/MM/AAAA) e horário (HH:MM).
-    - **Validação Lógica:** O sistema impede o agendamento de datas ou horários inválidos e de datas/horários que já passaram.
+
+- **Identificação e Autorização:** Ao iniciar, o cliente solicita o nome do usuário. O sistema utiliza essa identidade para garantir que um usuário só possa cancelar os próprios agendamentos, implementando uma regra de negócio sobre a funcionalidade de 'Cancelar um agendamento'.
+
+- **Privacidade e Visualização Aprimorada:** Para a funcionalidade de 'Listar todas as consultas salvas', a tela principal anonimiza o nome de outros pacientes para proteger a privacidade. A listagem é feita em uma tabela organizada e há uma aba dedicada "Meus Agendamentos" para uma visão focada do próprio usuário.
+
+- **Validação Robusta:** O sistema valida o 'cadastro de consultas'  em múltiplas camadas:
+    - Validação de formato e restrição de entrada nos campos de data e hora.
+    - Validação lógica de datas/horários (ex: não permite 31/02).
+    - Regras de negócio, como não permitir agendamentos no passado ou com mais de dois anos de antecedência.
+
+- **Interface Gráfica Moderna:** Interface desenvolvida com Python, usando a biblioteca padrão Tkinter e o tema `ttkbootstrap` para uma experiência de usuário agradável, portátil e que não depende de navegador.
 
 ## Tecnologias Utilizadas
 
 - **Linguagem:** Python 3
-- **Comunicação:** gRPC (`grpcio`, `grpcio-tools`) 
-- **Serialização de Dados:** Protocol Buffers 
-- **Interface Gráfica:** Tkinter com `ttkbootstrap` 
+- **Comunicação:** gRPC (`grpcio`, `grpcio-tools`)
+- **Serialização de Dados:** Protocol Buffers
+- **Interface Gráfica:** Tkinter com `ttkbootstrap`
 
 ## Pré-requisitos
 
@@ -36,7 +39,7 @@ A comunicação entre os componentes é realizada através do **gRPC (Google Rem
 
 2.  Abra um terminal nesse diretório e crie um ambiente virtual (recomendado):
     ```bash
-    python -m venv venv
+    python3 -m venv venv
     source venv/bin/activate  # No Windows: venv\Scripts\activate
     ```
 
@@ -53,27 +56,27 @@ A execução do sistema é feita em 3 passos, nesta ordem:
 
 Este passo compila o arquivo `.proto`, que define a comunicação, em código Python. **Ele só precisa ser executado uma vez**, ou sempre que o arquivo `agendamento.proto` for modificado.
 
-No seu terminal, execute:
+No seu terminal (com o `venv` ativado), execute:
 ```bash
-python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. agendamento.proto
+venv/bin/python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. agendamento.proto
 ```
 
 ### 2. Iniciar o Servidor
 
 O servidor precisa estar rodando para que os clientes possam se conectar a ele.
 
-Em um terminal, execute:
+No seu terminal (com o `venv` ativado), execute:
 ```bash
-python servidor.py
+venv/bin/python servidor.py
 ```
 Você verá uma mensagem `Iniciando servidor gRPC na porta 50051...`. **Deixe este terminal aberto.**
 
 ### 3. Iniciar o(s) Cliente(s)
 
-Você pode iniciar quantas instâncias do cliente quiser para simular múltiplos usuários acessando o sistema simultaneamente.
+Você pode iniciar quantas instâncias do cliente quiser para simular múltiplos usuários.
 
-Abra um **novo terminal** para cada cliente que desejar executar e, no diretório do projeto, rode o comando:
+Abra um **novo terminal** para cada cliente, navegue até a pasta do projeto, ative o ambiente virtual (`source venv/bin/activate`) e rode o comando:
 ```bash
-python cliente_gui.py
+venv/bin/python cliente_gui.py
 ```
-A interface gráfica do sistema será iniciada. Para testar a atualização em tempo real, abra pelo menos duas janelas de cliente e realize um agendamento em uma para ver a lista da outra ser atualizada automaticamente.
+Ao ser executado, o cliente abrirá uma caixa de diálogo pedindo o seu nome completo. Este nome será usado como sua identidade para agendar e cancelar consultas. Para testar as funcionalidades de privacidade e atualização em tempo real, inicie pelo menos dois clientes com nomes diferentes.
