@@ -5,7 +5,7 @@ import warnings
 
 import agendamento_pb2 as agendamento__pb2
 
-GRPC_GENERATED_VERSION = '1.72.1'
+GRPC_GENERATED_VERSION = '1.73.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -73,8 +73,7 @@ class AgendamentoMedicoServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ListarConsultas(self, request, context):
-        """MUDANÇA: O ListarConsultas agora é usado apenas para a primeira carga.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -92,7 +91,7 @@ class AgendamentoMedicoServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def InscreverParaAtualizacoes(self, request, context):
-        """NOVO: RPC que envia um stream de atualizações para o cliente.
+        """RPC que envia um stream de atualizações para o cliente.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')

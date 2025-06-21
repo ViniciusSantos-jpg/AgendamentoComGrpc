@@ -21,8 +21,10 @@ message AgendarConsultaResponse {
   bool sucesso = 2;
 }
 
-// Requisição para listar todas as consultas ou se inscrever para atualizações
-message SubscribeRequest {}
+// MODIFICADO: Requisição para listar ou se inscrever agora inclui o nome do requisitante
+message SubscribeRequest {
+  string nome_do_requisitante = 1;
+}
 
 // Resposta com a lista de consultas
 message ListarConsultasResponse {
@@ -45,6 +47,7 @@ message CancelarConsultaRequest {
   string paciente = 1;
   string data = 2;
   string horario = 3;
+  string nome_do_requisitante = 4;
 }
 
 // Resposta do cancelamento
@@ -58,13 +61,12 @@ message CancelarConsultaResponse {
 service AgendamentoMedico {
   rpc AgendarConsulta(AgendarConsultaRequest) returns (AgendarConsultaResponse);
 
-  // MUDANÇA: O ListarConsultas agora é usado apenas para a primeira carga.
   rpc ListarConsultas(SubscribeRequest) returns (ListarConsultasResponse);
 
   rpc VerificarDisponibilidade(VerificarDisponibilidadeRequest) returns (VerificarDisponibilidadeResponse);
 
   rpc CancelarConsulta(CancelarConsultaRequest) returns (CancelarConsultaResponse);
 
-  // NOVO: RPC que envia um stream de atualizações para o cliente.
+  // RPC que envia um stream de atualizações para o cliente.
   rpc InscreverParaAtualizacoes(SubscribeRequest) returns (stream ListarConsultasResponse);
 }
