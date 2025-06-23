@@ -2,71 +2,45 @@ syntax = "proto3";
 
 package agendamento;
 
-// Mensagem que representa uma consulta
+// ... (Consulta, AgendarConsultaRequest, etc. permanecem iguais)
 message Consulta {
   string paciente = 1;
   string medico = 2;
   string data = 3;
   string horario = 4;
+  string cpf_paciente = 5;
+}
+message AgendarConsultaRequest { Consulta consulta = 1; }
+message AgendarConsultaResponse { string mensagem = 1; bool sucesso = 2; }
+message SubscribeRequest { string cpf_do_requisitante = 1; }
+message ListarConsultasResponse { repeated Consulta consultas = 1; }
+message VerificarDisponibilidadeRequest { string data = 1; string horario = 2; }
+message VerificarDisponibilidadeResponse { bool disponivel = 1; }
+message CancelarConsultaRequest { string paciente = 1; string data = 2; string horario = 3; string cpf_do_requisitante = 4; }
+message CancelarConsultaResponse { string mensagem = 1; bool sucesso = 2; }
+
+
+// --- NOVAS MENSAGENS PARA LOGIN ---
+message LoginRequest {
+  string cpf = 1;
+  string nome = 2;
 }
 
-// Requisição para agendar uma nova consulta
-message AgendarConsultaRequest {
-  Consulta consulta = 1;
-}
-
-// Resposta do agendamento
-message AgendarConsultaResponse {
-  string mensagem = 1;
-  bool sucesso = 2;
-}
-
-// MODIFICADO: Requisição para listar ou se inscrever agora inclui o nome do requisitante
-message SubscribeRequest {
-  string nome_do_requisitante = 1;
-}
-
-// Resposta com a lista de consultas
-message ListarConsultasResponse {
-  repeated Consulta consultas = 1;
-}
-
-// Requisição para verificar a disponibilidade de um horário
-message VerificarDisponibilidadeRequest {
-    string data = 1;
-    string horario = 2;
-}
-
-// Resposta da verificação de disponibilidade
-message VerificarDisponibilidadeResponse {
-    bool disponivel = 1;
-}
-
-// Requisição para cancelar um agendamento
-message CancelarConsultaRequest {
-  string paciente = 1;
-  string data = 2;
-  string horario = 3;
-  string nome_do_requisitante = 4;
-}
-
-// Resposta do cancelamento
-message CancelarConsultaResponse {
-  string mensagem = 1;
-  bool sucesso = 2;
+message LoginResponse {
+  bool sucesso = 1;
+  string mensagem = 2;
+  string nome_correto = 3; // O servidor devolverá o nome canônico/correto
 }
 
 
-// Definição do serviço de agendamento
+// --- SERVIÇO ATUALIZADO ---
 service AgendamentoMedico {
+  // NOVO RPC PARA LOGIN
+  rpc Login(LoginRequest) returns (LoginResponse);
+
   rpc AgendarConsulta(AgendarConsultaRequest) returns (AgendarConsultaResponse);
-
   rpc ListarConsultas(SubscribeRequest) returns (ListarConsultasResponse);
-
   rpc VerificarDisponibilidade(VerificarDisponibilidadeRequest) returns (VerificarDisponibilidadeResponse);
-
   rpc CancelarConsulta(CancelarConsultaRequest) returns (CancelarConsultaResponse);
-
-  // RPC que envia um stream de atualizações para o cliente.
   rpc InscreverParaAtualizacoes(SubscribeRequest) returns (stream ListarConsultasResponse);
 }

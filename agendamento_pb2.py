@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11\x61gendamento.proto\x12\x0b\x61gendamento\"K\n\x08\x43onsulta\x12\x10\n\x08paciente\x18\x01 \x01(\t\x12\x0e\n\x06medico\x18\x02 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x03 \x01(\t\x12\x0f\n\x07horario\x18\x04 \x01(\t\"A\n\x16\x41gendarConsultaRequest\x12\'\n\x08\x63onsulta\x18\x01 \x01(\x0b\x32\x15.agendamento.Consulta\"<\n\x17\x41gendarConsultaResponse\x12\x10\n\x08mensagem\x18\x01 \x01(\t\x12\x0f\n\x07sucesso\x18\x02 \x01(\x08\"0\n\x10SubscribeRequest\x12\x1c\n\x14nome_do_requisitante\x18\x01 \x01(\t\"C\n\x17ListarConsultasResponse\x12(\n\tconsultas\x18\x01 \x03(\x0b\x32\x15.agendamento.Consulta\"@\n\x1fVerificarDisponibilidadeRequest\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\t\x12\x0f\n\x07horario\x18\x02 \x01(\t\"6\n VerificarDisponibilidadeResponse\x12\x12\n\ndisponivel\x18\x01 \x01(\x08\"h\n\x17\x43\x61ncelarConsultaRequest\x12\x10\n\x08paciente\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\t\x12\x0f\n\x07horario\x18\x03 \x01(\t\x12\x1c\n\x14nome_do_requisitante\x18\x04 \x01(\t\"=\n\x18\x43\x61ncelarConsultaResponse\x12\x10\n\x08mensagem\x18\x01 \x01(\t\x12\x0f\n\x07sucesso\x18\x02 \x01(\x08\x32\x87\x04\n\x11\x41gendamentoMedico\x12\\\n\x0f\x41gendarConsulta\x12#.agendamento.AgendarConsultaRequest\x1a$.agendamento.AgendarConsultaResponse\x12V\n\x0fListarConsultas\x12\x1d.agendamento.SubscribeRequest\x1a$.agendamento.ListarConsultasResponse\x12w\n\x18VerificarDisponibilidade\x12,.agendamento.VerificarDisponibilidadeRequest\x1a-.agendamento.VerificarDisponibilidadeResponse\x12_\n\x10\x43\x61ncelarConsulta\x12$.agendamento.CancelarConsultaRequest\x1a%.agendamento.CancelarConsultaResponse\x12\x62\n\x19InscreverParaAtualizacoes\x12\x1d.agendamento.SubscribeRequest\x1a$.agendamento.ListarConsultasResponse0\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11\x61gendamento.proto\x12\x0b\x61gendamento\"a\n\x08\x43onsulta\x12\x10\n\x08paciente\x18\x01 \x01(\t\x12\x0e\n\x06medico\x18\x02 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x03 \x01(\t\x12\x0f\n\x07horario\x18\x04 \x01(\t\x12\x14\n\x0c\x63pf_paciente\x18\x05 \x01(\t\"A\n\x16\x41gendarConsultaRequest\x12\'\n\x08\x63onsulta\x18\x01 \x01(\x0b\x32\x15.agendamento.Consulta\"<\n\x17\x41gendarConsultaResponse\x12\x10\n\x08mensagem\x18\x01 \x01(\t\x12\x0f\n\x07sucesso\x18\x02 \x01(\x08\"/\n\x10SubscribeRequest\x12\x1b\n\x13\x63pf_do_requisitante\x18\x01 \x01(\t\"C\n\x17ListarConsultasResponse\x12(\n\tconsultas\x18\x01 \x03(\x0b\x32\x15.agendamento.Consulta\"@\n\x1fVerificarDisponibilidadeRequest\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\t\x12\x0f\n\x07horario\x18\x02 \x01(\t\"6\n VerificarDisponibilidadeResponse\x12\x12\n\ndisponivel\x18\x01 \x01(\x08\"g\n\x17\x43\x61ncelarConsultaRequest\x12\x10\n\x08paciente\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\t\x12\x0f\n\x07horario\x18\x03 \x01(\t\x12\x1b\n\x13\x63pf_do_requisitante\x18\x04 \x01(\t\"=\n\x18\x43\x61ncelarConsultaResponse\x12\x10\n\x08mensagem\x18\x01 \x01(\t\x12\x0f\n\x07sucesso\x18\x02 \x01(\x08\")\n\x0cLoginRequest\x12\x0b\n\x03\x63pf\x18\x01 \x01(\t\x12\x0c\n\x04nome\x18\x02 \x01(\t\"H\n\rLoginResponse\x12\x0f\n\x07sucesso\x18\x01 \x01(\x08\x12\x10\n\x08mensagem\x18\x02 \x01(\t\x12\x14\n\x0cnome_correto\x18\x03 \x01(\t2\xc7\x04\n\x11\x41gendamentoMedico\x12>\n\x05Login\x12\x19.agendamento.LoginRequest\x1a\x1a.agendamento.LoginResponse\x12\\\n\x0f\x41gendarConsulta\x12#.agendamento.AgendarConsultaRequest\x1a$.agendamento.AgendarConsultaResponse\x12V\n\x0fListarConsultas\x12\x1d.agendamento.SubscribeRequest\x1a$.agendamento.ListarConsultasResponse\x12w\n\x18VerificarDisponibilidade\x12,.agendamento.VerificarDisponibilidadeRequest\x1a-.agendamento.VerificarDisponibilidadeResponse\x12_\n\x10\x43\x61ncelarConsulta\x12$.agendamento.CancelarConsultaRequest\x1a%.agendamento.CancelarConsultaResponse\x12\x62\n\x19InscreverParaAtualizacoes\x12\x1d.agendamento.SubscribeRequest\x1a$.agendamento.ListarConsultasResponse0\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,23 +32,27 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'agendamento_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_CONSULTA']._serialized_start=34
-  _globals['_CONSULTA']._serialized_end=109
-  _globals['_AGENDARCONSULTAREQUEST']._serialized_start=111
-  _globals['_AGENDARCONSULTAREQUEST']._serialized_end=176
-  _globals['_AGENDARCONSULTARESPONSE']._serialized_start=178
-  _globals['_AGENDARCONSULTARESPONSE']._serialized_end=238
-  _globals['_SUBSCRIBEREQUEST']._serialized_start=240
-  _globals['_SUBSCRIBEREQUEST']._serialized_end=288
-  _globals['_LISTARCONSULTASRESPONSE']._serialized_start=290
-  _globals['_LISTARCONSULTASRESPONSE']._serialized_end=357
-  _globals['_VERIFICARDISPONIBILIDADEREQUEST']._serialized_start=359
-  _globals['_VERIFICARDISPONIBILIDADEREQUEST']._serialized_end=423
-  _globals['_VERIFICARDISPONIBILIDADERESPONSE']._serialized_start=425
-  _globals['_VERIFICARDISPONIBILIDADERESPONSE']._serialized_end=479
-  _globals['_CANCELARCONSULTAREQUEST']._serialized_start=481
-  _globals['_CANCELARCONSULTAREQUEST']._serialized_end=585
-  _globals['_CANCELARCONSULTARESPONSE']._serialized_start=587
-  _globals['_CANCELARCONSULTARESPONSE']._serialized_end=648
-  _globals['_AGENDAMENTOMEDICO']._serialized_start=651
-  _globals['_AGENDAMENTOMEDICO']._serialized_end=1170
+  _globals['_CONSULTA']._serialized_end=131
+  _globals['_AGENDARCONSULTAREQUEST']._serialized_start=133
+  _globals['_AGENDARCONSULTAREQUEST']._serialized_end=198
+  _globals['_AGENDARCONSULTARESPONSE']._serialized_start=200
+  _globals['_AGENDARCONSULTARESPONSE']._serialized_end=260
+  _globals['_SUBSCRIBEREQUEST']._serialized_start=262
+  _globals['_SUBSCRIBEREQUEST']._serialized_end=309
+  _globals['_LISTARCONSULTASRESPONSE']._serialized_start=311
+  _globals['_LISTARCONSULTASRESPONSE']._serialized_end=378
+  _globals['_VERIFICARDISPONIBILIDADEREQUEST']._serialized_start=380
+  _globals['_VERIFICARDISPONIBILIDADEREQUEST']._serialized_end=444
+  _globals['_VERIFICARDISPONIBILIDADERESPONSE']._serialized_start=446
+  _globals['_VERIFICARDISPONIBILIDADERESPONSE']._serialized_end=500
+  _globals['_CANCELARCONSULTAREQUEST']._serialized_start=502
+  _globals['_CANCELARCONSULTAREQUEST']._serialized_end=605
+  _globals['_CANCELARCONSULTARESPONSE']._serialized_start=607
+  _globals['_CANCELARCONSULTARESPONSE']._serialized_end=668
+  _globals['_LOGINREQUEST']._serialized_start=670
+  _globals['_LOGINREQUEST']._serialized_end=711
+  _globals['_LOGINRESPONSE']._serialized_start=713
+  _globals['_LOGINRESPONSE']._serialized_end=785
+  _globals['_AGENDAMENTOMEDICO']._serialized_start=788
+  _globals['_AGENDAMENTOMEDICO']._serialized_end=1371
 # @@protoc_insertion_point(module_scope)
