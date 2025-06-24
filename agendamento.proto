@@ -3,17 +3,17 @@ syntax = "proto3";
 package agendamento;
 
 message Consulta {
-  string id_consulta = 1; // O código único
+  string id_consulta = 1;
   string paciente = 2;
   string medico = 3;
   string data = 4;
   string horario = 5;
+  string cpf_paciente = 6;
 }
 
 message AgendarConsultaRequest {
-  // Não precisa do ID aqui, o servidor vai gerar
   string paciente = 1;
-  string medico = 2;
+  string cpf_paciente = 2;
   string data = 3;
   string horario = 4;
 }
@@ -21,7 +21,7 @@ message AgendarConsultaRequest {
 message AgendarConsultaResponse {
   bool sucesso = 1;
   string mensagem = 2;
-  string id_consulta_gerado = 3; // Devolve o código para o usuário
+  string id_consulta_gerado = 3;
 }
 
 message GerenciarConsultaRequest {
@@ -31,16 +31,23 @@ message GerenciarConsultaRequest {
 message GerenciarConsultaResponse {
   bool sucesso = 1;
   string mensagem = 2;
-  Consulta consulta = 3; // Devolve a consulta se for uma busca
+  Consulta consulta = 3;
+}
+
+message AgendaMedicoRequest {}
+
+message ListarConsultasResponse {
+  repeated Consulta consultas = 1;
 }
 
 service AgendamentoMedico {
-  // Cadastra uma nova consulta e retorna um código único
   rpc AgendarConsulta(AgendarConsultaRequest) returns (AgendarConsultaResponse);
-
-  // Busca os detalhes de uma consulta usando seu código
   rpc BuscarConsulta(GerenciarConsultaRequest) returns (GerenciarConsultaResponse);
-
-  // Cancela uma consulta usando seu código
   rpc CancelarConsulta(GerenciarConsultaRequest) returns (GerenciarConsultaResponse);
+  
+  // Este é para uma carga única (opcional agora)
+  rpc ListarAgendaMedico(AgendaMedicoRequest) returns (ListarConsultasResponse);
+
+  // NOVO: RPC de streaming para a agenda do médico
+  rpc InscreverParaAgendaMedico(AgendaMedicoRequest) returns (stream ListarConsultasResponse);
 }
