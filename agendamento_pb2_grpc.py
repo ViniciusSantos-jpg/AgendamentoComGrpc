@@ -26,8 +26,7 @@ if _version_not_supported:
 
 
 class AgendamentoMedicoStub(object):
-    """--- SERVIÇO ATUALIZADO ---
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
         """Constructor.
@@ -35,75 +34,43 @@ class AgendamentoMedicoStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.Login = channel.unary_unary(
-                '/agendamento.AgendamentoMedico/Login',
-                request_serializer=agendamento__pb2.LoginRequest.SerializeToString,
-                response_deserializer=agendamento__pb2.LoginResponse.FromString,
-                _registered_method=True)
         self.AgendarConsulta = channel.unary_unary(
                 '/agendamento.AgendamentoMedico/AgendarConsulta',
                 request_serializer=agendamento__pb2.AgendarConsultaRequest.SerializeToString,
                 response_deserializer=agendamento__pb2.AgendarConsultaResponse.FromString,
                 _registered_method=True)
-        self.ListarConsultas = channel.unary_unary(
-                '/agendamento.AgendamentoMedico/ListarConsultas',
-                request_serializer=agendamento__pb2.SubscribeRequest.SerializeToString,
-                response_deserializer=agendamento__pb2.ListarConsultasResponse.FromString,
-                _registered_method=True)
-        self.VerificarDisponibilidade = channel.unary_unary(
-                '/agendamento.AgendamentoMedico/VerificarDisponibilidade',
-                request_serializer=agendamento__pb2.VerificarDisponibilidadeRequest.SerializeToString,
-                response_deserializer=agendamento__pb2.VerificarDisponibilidadeResponse.FromString,
+        self.BuscarConsulta = channel.unary_unary(
+                '/agendamento.AgendamentoMedico/BuscarConsulta',
+                request_serializer=agendamento__pb2.GerenciarConsultaRequest.SerializeToString,
+                response_deserializer=agendamento__pb2.GerenciarConsultaResponse.FromString,
                 _registered_method=True)
         self.CancelarConsulta = channel.unary_unary(
                 '/agendamento.AgendamentoMedico/CancelarConsulta',
-                request_serializer=agendamento__pb2.CancelarConsultaRequest.SerializeToString,
-                response_deserializer=agendamento__pb2.CancelarConsultaResponse.FromString,
-                _registered_method=True)
-        self.InscreverParaAtualizacoes = channel.unary_stream(
-                '/agendamento.AgendamentoMedico/InscreverParaAtualizacoes',
-                request_serializer=agendamento__pb2.SubscribeRequest.SerializeToString,
-                response_deserializer=agendamento__pb2.ListarConsultasResponse.FromString,
+                request_serializer=agendamento__pb2.GerenciarConsultaRequest.SerializeToString,
+                response_deserializer=agendamento__pb2.GerenciarConsultaResponse.FromString,
                 _registered_method=True)
 
 
 class AgendamentoMedicoServicer(object):
-    """--- SERVIÇO ATUALIZADO ---
-    """
+    """Missing associated documentation comment in .proto file."""
 
-    def Login(self, request, context):
-        """NOVO RPC PARA LOGIN
+    def AgendarConsulta(self, request, context):
+        """Cadastra uma nova consulta e retorna um código único
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def AgendarConsulta(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def ListarConsultas(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def VerificarDisponibilidade(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+    def BuscarConsulta(self, request, context):
+        """Busca os detalhes de uma consulta usando seu código
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def CancelarConsulta(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def InscreverParaAtualizacoes(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Cancela uma consulta usando seu código
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -111,35 +78,20 @@ class AgendamentoMedicoServicer(object):
 
 def add_AgendamentoMedicoServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'Login': grpc.unary_unary_rpc_method_handler(
-                    servicer.Login,
-                    request_deserializer=agendamento__pb2.LoginRequest.FromString,
-                    response_serializer=agendamento__pb2.LoginResponse.SerializeToString,
-            ),
             'AgendarConsulta': grpc.unary_unary_rpc_method_handler(
                     servicer.AgendarConsulta,
                     request_deserializer=agendamento__pb2.AgendarConsultaRequest.FromString,
                     response_serializer=agendamento__pb2.AgendarConsultaResponse.SerializeToString,
             ),
-            'ListarConsultas': grpc.unary_unary_rpc_method_handler(
-                    servicer.ListarConsultas,
-                    request_deserializer=agendamento__pb2.SubscribeRequest.FromString,
-                    response_serializer=agendamento__pb2.ListarConsultasResponse.SerializeToString,
-            ),
-            'VerificarDisponibilidade': grpc.unary_unary_rpc_method_handler(
-                    servicer.VerificarDisponibilidade,
-                    request_deserializer=agendamento__pb2.VerificarDisponibilidadeRequest.FromString,
-                    response_serializer=agendamento__pb2.VerificarDisponibilidadeResponse.SerializeToString,
+            'BuscarConsulta': grpc.unary_unary_rpc_method_handler(
+                    servicer.BuscarConsulta,
+                    request_deserializer=agendamento__pb2.GerenciarConsultaRequest.FromString,
+                    response_serializer=agendamento__pb2.GerenciarConsultaResponse.SerializeToString,
             ),
             'CancelarConsulta': grpc.unary_unary_rpc_method_handler(
                     servicer.CancelarConsulta,
-                    request_deserializer=agendamento__pb2.CancelarConsultaRequest.FromString,
-                    response_serializer=agendamento__pb2.CancelarConsultaResponse.SerializeToString,
-            ),
-            'InscreverParaAtualizacoes': grpc.unary_stream_rpc_method_handler(
-                    servicer.InscreverParaAtualizacoes,
-                    request_deserializer=agendamento__pb2.SubscribeRequest.FromString,
-                    response_serializer=agendamento__pb2.ListarConsultasResponse.SerializeToString,
+                    request_deserializer=agendamento__pb2.GerenciarConsultaRequest.FromString,
+                    response_serializer=agendamento__pb2.GerenciarConsultaResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -150,35 +102,7 @@ def add_AgendamentoMedicoServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class AgendamentoMedico(object):
-    """--- SERVIÇO ATUALIZADO ---
-    """
-
-    @staticmethod
-    def Login(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/agendamento.AgendamentoMedico/Login',
-            agendamento__pb2.LoginRequest.SerializeToString,
-            agendamento__pb2.LoginResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+    """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def AgendarConsulta(request,
@@ -208,7 +132,7 @@ class AgendamentoMedico(object):
             _registered_method=True)
 
     @staticmethod
-    def ListarConsultas(request,
+    def BuscarConsulta(request,
             target,
             options=(),
             channel_credentials=None,
@@ -221,36 +145,9 @@ class AgendamentoMedico(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/agendamento.AgendamentoMedico/ListarConsultas',
-            agendamento__pb2.SubscribeRequest.SerializeToString,
-            agendamento__pb2.ListarConsultasResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
-
-    @staticmethod
-    def VerificarDisponibilidade(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/agendamento.AgendamentoMedico/VerificarDisponibilidade',
-            agendamento__pb2.VerificarDisponibilidadeRequest.SerializeToString,
-            agendamento__pb2.VerificarDisponibilidadeResponse.FromString,
+            '/agendamento.AgendamentoMedico/BuscarConsulta',
+            agendamento__pb2.GerenciarConsultaRequest.SerializeToString,
+            agendamento__pb2.GerenciarConsultaResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -276,35 +173,8 @@ class AgendamentoMedico(object):
             request,
             target,
             '/agendamento.AgendamentoMedico/CancelarConsulta',
-            agendamento__pb2.CancelarConsultaRequest.SerializeToString,
-            agendamento__pb2.CancelarConsultaResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
-
-    @staticmethod
-    def InscreverParaAtualizacoes(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_stream(
-            request,
-            target,
-            '/agendamento.AgendamentoMedico/InscreverParaAtualizacoes',
-            agendamento__pb2.SubscribeRequest.SerializeToString,
-            agendamento__pb2.ListarConsultasResponse.FromString,
+            agendamento__pb2.GerenciarConsultaRequest.SerializeToString,
+            agendamento__pb2.GerenciarConsultaResponse.FromString,
             options,
             channel_credentials,
             insecure,

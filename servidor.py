@@ -1,126 +1,101 @@
-# ... (imports iguais)
 from concurrent import futures
 import grpc
-import time
+import os
+import pickle
 import threading
-from queue import Queue
 from datetime import datetime, timedelta
+import uuid # Para gerar códigos únicos
+
 import agendamento_pb2
 import agendamento_pb2_grpc
 
-
-# --- BANCOS DE DADOS EM MEMÓRIA ---
+CONSULTAS_DB_FILE = 'consultas_v2.pkl'
 banco_de_dados_consultas = []
-# NOVO: Dicionário para armazenar {cpf: nome_completo}
-usuarios_cadastrados = {} 
-db_lock = threading.Lock()
-subscribers = {}
+db_lock = threading.RLock()
 
-# ... (notificar_subscribers igual à versão anterior, com anonimização por CPF)
-def notificar_subscribers():
+def carregar_dados():
+    global banco_de_dados_consultas
     with db_lock:
-        consultas_originais = list(banco_de_dados_consultas)
-    for user_queue, cpf_requisitante in subscribers.items():
-        consultas_sanitizadas = []
-        for consulta in consultas_originais:
-            cs = agendamento_pb2.Consulta(); cs.CopyFrom(consulta)
-            if cs.cpf_paciente != cpf_requisitante: cs.paciente = cs.paciente.split(' ')[0]
-            consultas_sanitizadas.append(cs)
-        response = agendamento_pb2.ListarConsultasResponse(consultas=consultas_sanitizadas)
-        user_queue.put(response)
+        if os.path.exists(CONSULTAS_DB_FILE):
+            with open(CONSULTAS_DB_FILE, 'rb') as f:
+                banco_de_dados_consultas = pickle.load(f)
+                print(f"Carregadas {len(banco_de_dados_consultas)} consultas do arquivo.")
 
+def salvar_dados():
+    with db_lock:
+        print("\nSalvando dados antes de encerrar...")
+        with open(CONSULTAS_DB_FILE, 'wb') as f:
+            pickle.dump(banco_de_dados_consultas, f)
+            print(f"- {len(banco_de_dados_consultas)} consultas salvas em {CONSULTAS_DB_FILE}")
 
 class AgendamentoMedicoServicer(agendamento_pb2_grpc.AgendamentoMedicoServicer):
     
-    # --- NOVA FUNÇÃO DE LOGIN ---
-    def Login(self, request, context):
-        cpf = request.cpf
-        nome = request.nome
-        print(f"Tentativa de login/registro para o CPF: {cpf}")
-
-        with db_lock:
-            # Usuário já existe?
-            if cpf in usuarios_cadastrados:
-                nome_cadastrado = usuarios_cadastrados[cpf]
-                # Compara os nomes ignorando maiúsculas/minúsculas
-                if nome_cadastrado.lower() == nome.lower():
-                    print("Login bem-sucedido.")
-                    return agendamento_pb2.LoginResponse(
-                        sucesso=True, 
-                        mensagem="Login bem-sucedido!",
-                        nome_correto=nome_cadastrado # Devolve o nome com a formatação original
-                    )
-                else:
-                    print("Falha no login: CPF já cadastrado com outro nome.")
-                    return agendamento_pb2.LoginResponse(
-                        sucesso=False,
-                        mensagem=f"Erro: CPF já cadastrado",
-                        nome_correto=""
-                    )
-            # Novo usuário
-            else:
-                # Padroniza o nome com a primeira letra de cada palavra maiúscula
-                nome_padronizado = nome.title()
-                usuarios_cadastrados[cpf] = nome_padronizado
-                print(f"Novo usuário registrado: CPF {cpf} com nome '{nome_padronizado}'")
-                return agendamento_pb2.LoginResponse(
-                    sucesso=True,
-                    mensagem="Bem-vindo! Usuário registrado e logado com sucesso!",
-                    nome_correto=nome_padronizado
-                )
-
-    # ... (outras funções como AgendarConsulta, Listar, etc., permanecem iguais)
     def AgendarConsulta(self, request, context):
+        """Implementa a funcionalidade de 'Cadastrar uma consulta' e gera um código."""
         try:
-            data_agendamento = datetime.strptime(request.consulta.data, '%d/%m/%Y')
-            data_limite = datetime.now() + timedelta(days=365*2)
-            if data_agendamento > data_limite: return agendamento_pb2.AgendarConsultaResponse(mensagem="Erro: Não é possível agendar com mais de dois anos de antecedência.", sucesso=False)
-        except ValueError: return agendamento_pb2.AgendarConsultaResponse(mensagem="Erro: Formato de data inválido.", sucesso=False)
+            horario_agendamento = datetime.strptime(f"{request.data} {request.horario}", '%d/%m/%Y %H:%M')
+            if horario_agendamento < datetime.now(): return agendamento_pb2.AgendarConsultaResponse(sucesso=False, mensagem="Erro: Não é possível agendar em datas ou horários passados.")
+            if horario_agendamento > datetime.now() + timedelta(days=365*2): return agendamento_pb2.AgendarConsultaResponse(sucesso=False, mensagem="Erro: Não é possível agendar com mais de dois anos de antecedência.")
+        except ValueError: return agendamento_pb2.AgendarConsultaResponse(sucesso=False, mensagem="Erro: Formato de data ou horário inválido.")
+
         with db_lock:
-            for c in banco_de_dados_consultas:
-                if c.data == request.consulta.data and c.horario == request.consulta.horario:
-                    return agendamento_pb2.AgendarConsultaResponse(mensagem="Erro: Horário já agendado.", sucesso=False)
-            banco_de_dados_consultas.append(request.consulta)
-        notificar_subscribers()
-        return agendamento_pb2.AgendarConsultaResponse(mensagem="Consulta agendada com sucesso!", sucesso=True)
-    def ListarConsultas(self, request, context):
-        consultas_sanitizadas = []
+            for consulta_existente in banco_de_dados_consultas:
+                if consulta_existente.data == request.data and consulta_existente.horario == request.horario:
+                    return agendamento_pb2.AgendarConsultaResponse(sucesso=False, mensagem="Erro: Horário já agendado.")
+            
+            # --- MUDANÇA AQUI ---
+            # Reduzido para 4 caracteres, conforme solicitado.
+            novo_id = str(uuid.uuid4())[:4]
+            
+            nova_consulta = agendamento_pb2.Consulta(
+                id_consulta=novo_id,
+                paciente=request.paciente,
+                medico=request.medico,
+                data=request.data,
+                horario=request.horario
+            )
+            banco_de_dados_consultas.append(nova_consulta)
+        
+        return agendamento_pb2.AgendarConsultaResponse(
+            sucesso=True, 
+            mensagem="Consulta agendada com sucesso! Guarde seu código.",
+            id_consulta_gerado=novo_id
+        )
+
+    def BuscarConsulta(self, request, context):
         with db_lock:
-            for c in banco_de_dados_consultas:
-                cs = agendamento_pb2.Consulta(); cs.CopyFrom(c)
-                if cs.cpf_paciente != request.cpf_do_requisitante: cs.paciente = cs.paciente.split(' ')[0]
-                consultas_sanitizadas.append(cs)
-        return agendamento_pb2.ListarConsultasResponse(consultas=consultas_sanitizadas)
-    def InscreverParaAtualizacoes(self, request, context):
-        cpf_requisitante = request.cpf_do_requisitante; q = Queue(); subscribers[q] = cpf_requisitante
-        try:
-            while context.is_active(): yield q.get()
-        finally:
-            if q in subscribers: del subscribers[q]
+            for consulta in banco_de_dados_consultas:
+                if consulta.id_consulta == request.id_consulta:
+                    return agendamento_pb2.GerenciarConsultaResponse(sucesso=True, consulta=consulta)
+        return agendamento_pb2.GerenciarConsultaResponse(sucesso=False, mensagem="Consulta não encontrada.")
+
     def CancelarConsulta(self, request, context):
-        removido=False; msg_erro="Consulta não encontrada."
+        """Implementa a funcionalidade de 'Cancelar um agendamento' usando o código."""
+        consulta_para_remover = None
         with db_lock:
-            consulta_alvo = None
-            for c in banco_de_dados_consultas:
-                if c.data==request.data and c.horario==request.horario and c.paciente.lower()==request.paciente.lower():
-                    consulta_alvo=c; break
-            if consulta_alvo:
-                if consulta_alvo.cpf_paciente == request.cpf_do_requisitante:
-                    banco_de_dados_consultas.remove(consulta_alvo); removido=True; notificar_subscribers()
-                else: msg_erro="Apenas o paciente que marcou a consulta pode cancelá-la."
-        if removido: return agendamento_pb2.CancelarConsultaResponse(mensagem="Consulta cancelada com sucesso!", sucesso=True)
-        else: return agendamento_pb2.CancelarConsultaResponse(mensagem=msg_erro, sucesso=False)
-    def VerificarDisponibilidade(self, request, context):
-        with db_lock:
-            for c in banco_de_dados_consultas:
-                if c.data == request.data and c.horario == request.horario: return agendamento_pb2.VerificarDisponibilidadeResponse(disponivel=False)
-        return agendamento_pb2.VerificarDisponibilidadeResponse(disponivel=True)
+            for consulta in banco_de_dados_consultas:
+                if consulta.id_consulta == request.id_consulta:
+                    consulta_para_remover = consulta
+                    break
+            
+            if consulta_para_remover:
+                banco_de_dados_consultas.remove(consulta_para_remover)
+                return agendamento_pb2.GerenciarConsultaResponse(sucesso=True, mensagem="Consulta cancelada com sucesso.")
+        
+        return agendamento_pb2.GerenciarConsultaResponse(sucesso=False, mensagem="Consulta não encontrada ou já cancelada.")
+
 
 def serve():
-    # ... (código para iniciar o servidor igual)
+    carregar_dados()
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     agendamento_pb2_grpc.add_AgendamentoMedicoServicer_to_server(AgendamentoMedicoServicer(), server)
-    server.add_insecure_port('[::]:50051'); print("Iniciando servidor gRPC na porta 50051..."); server.start(); server.wait_for_termination()
+    server.add_insecure_port('[::]:50051')
+    print("Iniciando servidor gRPC na porta 50051...")
+    server.start()
+    try:
+        server.wait_for_termination()
+    finally:
+        salvar_dados()
 
 if __name__ == '__main__':
     serve()
