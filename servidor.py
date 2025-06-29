@@ -10,7 +10,7 @@ banco_de_dados_consultas = []
 db_lock = threading.RLock()
 NOME_DO_MEDICO_PADRAO = "Dr. Gregory House"
 
-# NOVO: Lista de subscribers para a interface do médico
+# Lista de subscribers para a interface do médico
 subscribers_medico = []
 
 def carregar_dados():
@@ -34,7 +34,7 @@ def notificar_medicos():
             if consulta.medico == NOME_DO_MEDICO_PADRAO:
                 agenda_completa.append(consulta)
         
-        # Copia a lista de subscribers para iterar com segurança
+        # Copia a lista de subscribers para iterar
         subscribers_atuais = list(subscribers_medico)
 
     agenda_ordenada = sorted(agenda_completa, key=lambda c: (datetime.strptime(c.data, '%d/%m/%Y'), c.horario))
@@ -47,12 +47,8 @@ def notificar_medicos():
 class AgendamentoMedicoServicer(agendamento_pb2_grpc.AgendamentoMedicoServicer):
     
     def AgendarConsulta(self, request, context):
-        # Validações...
-        # ...
         with db_lock:
-            # Lógica de verificação...
-            # ...
-            
+    
             # Adiciona a consulta
             nova_consulta = agendamento_pb2.Consulta(
                 id_consulta=str(uuid.uuid4())[:4],
@@ -106,7 +102,6 @@ class AgendamentoMedicoServicer(agendamento_pb2_grpc.AgendamentoMedicoServicer):
             with db_lock:
                 subscribers_medico.remove(q)
 
-    # O resto das funções permanecem as mesmas
     def ListarAgendaMedico(self, request, context):
         agenda_do_medico = []
         with db_lock:

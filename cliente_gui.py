@@ -58,12 +58,11 @@ class AppCliente(ttk.Window):
         self.resultado_label = ttk.Label(self, text="Aguardando ação...", font=("Helvetica", 10, "italic"), wraplength=650)
         self.resultado_label.pack(padx=20, pady=20, fill=X)
 
-    # --- FUNÇÃO DE VALIDAÇÃO CORRIGIDA (RESOLVE O BUG DE APAGAR) ---
+    # --- FUNÇÃO DE VALIDAÇÃO ---
     def _validate_numeric_input(self, P):
         """Permite a entrada apenas se o conteúdo for numérico, ignorando os formatadores."""
         if P == "":
             return True
-        # Remove os caracteres de formatação e SÓ ENTÃO verifica se o resto é dígito
         return P.replace('/', '').replace(':', '').isdigit()
 
     def _formatar_nome_para_titulo(self, event):
@@ -77,8 +76,6 @@ class AppCliente(ttk.Window):
             entry.icursor(cursor_pos)
 
     def _formatar_data(self, event):
-        # A verificação de teclas especiais como backspace não é mais necessária
-        # pois a validação _validate_numeric_input já lida com o estado do texto.
         entry = self.data_entry
         texto_atual = entry.get()
         texto_numerico = texto_atual.replace("/", "")[:8]
@@ -93,7 +90,6 @@ class AppCliente(ttk.Window):
             cursor_pos = entry.index(INSERT)
             entry.delete(0, END)
             entry.insert(0, novo_texto)
-            # Tenta restaurar a posição do cursor de forma inteligente
             if cursor_pos == len(texto_atual) and len(novo_texto) > len(texto_atual):
                  entry.icursor(len(novo_texto))
             else:

@@ -2,7 +2,7 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import messagebox
 import grpc
-import threading # Importa threading
+import threading
 import agendamento_pb2
 import agendamento_pb2_grpc
 
@@ -14,7 +14,6 @@ class AppMedico(ttk.Window):
 
         self.stub = agendamento_pb2_grpc.AgendamentoMedicoStub(channel)
         
-        # --- LOGIN REMOVIDO ---
         # Define o nome do médico aqui, poderia vir de um login mais complexo
         self.nome_medico = "Dr. Gregory House"
         self.title(f"Agenda de {self.nome_medico}")
@@ -23,9 +22,7 @@ class AppMedico(ttk.Window):
         frame = ttk.Frame(self, padding=10)
         frame.pack(fill=BOTH, expand=True)
 
-        # --- BOTÃO DE ATUALIZAR REMOVIDO ---
-
-        # Tabela (Treeview)
+        # Tabela
         columns = ('data', 'horario', 'paciente', 'cpf')
         self.tree = ttk.Treeview(frame, columns=columns, show='headings')
         self.tree.heading('data', text='Data'); self.tree.column('data', width=100, anchor=CENTER)
@@ -35,13 +32,12 @@ class AppMedico(ttk.Window):
         
         self.tree.pack(fill=BOTH, expand=True)
         
-        # NOVO: Inicia a thread que ouve as atualizações do servidor
+        # Inicia a thread que ouve as atualizações do servidor
         threading.Thread(target=self.ouvir_atualizacoes_agenda, daemon=True).start()
 
     def ouvir_atualizacoes_agenda(self):
         """Ouve o stream de atualizações do servidor em segundo plano."""
         try:
-            # A requisição agora é vazia
             request = agendamento_pb2.AgendaMedicoRequest()
             for response in self.stub.InscreverParaAgendaMedico(request):
                 # Agenda a atualização da UI na thread principal
